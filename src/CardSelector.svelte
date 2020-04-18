@@ -37,7 +37,7 @@
 
 <div class="card-container">
     {#each cards as card}
-        <Card card="{card}" selected="{selected == card}" show="{true}" onSelected="{onSelected}"/>
+        <Card card="{card}" selected="{selected === card}" show="{true}" onSelected="{onSelected}"/>
     {/each}
-    <Button icon="{currentCardShow ? eyeSlash : eye}" text="{currentCardShow ? 'Hide' : 'Reveal'}" disabled="{false}" action="{() => onRevealToggle()}"/>
 </div>
+<Button icon="{currentCardShow ? eyeSlash : eye}" text="{currentCardShow ? 'Hide' : 'Reveal'}" disabled="{false}" action="{() => onRevealToggle()}"/>

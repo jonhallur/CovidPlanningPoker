@@ -116,7 +116,7 @@ export const createRoom = async (userId, roomName) => {
   let roomsSnapshot = await roomsRef.once('value');
   let rooms = roomsSnapshot.val();
   let count = R.keys(rooms).length;
-  let hash = hashids.encode(count);
+  let hash = hashids.encode(count+1000);
   let newRoomSnap = await roomsRef.push({
     name: roomName,
     owner: userId,

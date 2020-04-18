@@ -25,12 +25,12 @@
         showCreateRoomInput = !showCreateRoomInput;
         showJoinRoomInput = false;
     };
-    const onJoinRoom = (roomId) => {
+    const onJoinRoom = async (roomId) => {
         showJoinRoomInput = false;
         if(R.isEmpty(roomId)) {
             return;
         }
-        let joined = joinRoom(user.uid, roomId);
+        await joinRoom(user.uid, roomId);
         joinRoomId = '';
     };
     const onCreateRoom = (roomName) => {
