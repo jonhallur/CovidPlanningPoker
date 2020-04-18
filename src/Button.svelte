@@ -1,8 +1,8 @@
 <script>
     import Icon from 'svelte-awesome';
-    export let action;
-    export let text;
-    export let disabled;
+    export let action = () => console.log("No action was set");
+    export let text = "";
+    export let disabled = false;
     export let icon;
 </script>
 
@@ -15,6 +15,8 @@
         padding: 0.5em;
         display: flex;
         align-items: center;
+        justify-content: center;
+        height: 50px;
     }
     .button span {
         padding-right: 8px;

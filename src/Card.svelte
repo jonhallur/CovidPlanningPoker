@@ -2,7 +2,7 @@
     export let card;
     export let selected;
     export let show;
-    export let onSelected;
+    export let onSelected = () => { console.log("onSelected has not been set")};
 </script>
 
 <style>

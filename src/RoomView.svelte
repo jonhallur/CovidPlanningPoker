@@ -1,6 +1,6 @@
 <script>
     import * as R from 'ramda'
-    import {objectToArray, leaveRoom} from './firebase'
+    import {objectToArray, leaveRoom, kickUserFromRoom} from './firebase'
     import {signOut} from 'svelte-awesome/icons'
     import Button from './Button.svelte'
     import CardSelector from "./CardSelector.svelte";
@@ -11,18 +11,20 @@
     export let users;
     let roomUsers = [];
     let selected;
+    let showCards = false;
     $: {
         if(!R.isEmpty(room)) {
             let userId = user.uid;
-            let userObj = R.propOr([], 'users', room);
-            if(!R.isEmpty(userObj)) {
-                selected = R.propOr(false, 'selected', userObj[userId]);
+            let usersObject = R.propOr([], 'users', room);
+            if(!R.isEmpty(usersObject)) {
+                selected = R.propOr(false, 'selected', usersObject[userId]);
                 if (!R.isEmpty(users)) {
                     let usersWithName = R.mapObjIndexed((value, key) => {
                         let name = users[key].name;
-                        return {...value, name: name}
-                    })(userObj);
+                        return {...value, name: name, key:key}
+                    })(usersObject);
                     roomUsers = objectToArray(usersWithName);
+                    showCards = R.all(R.pathEq(['value', 'show'], true), roomUsers)
                 }
             }
         }
@@ -54,9 +56,12 @@
 <div class="players-container">
     {#each roomUsers as {key, value}}
     <div class="player">
+        {#if user.uid === room.owner}
+            <Button text="Kick" icon="{signOut}" action={() => kickUserFromRoom(value.key)} />
+        {/if}
         <h5>{value.name}</h5>
         <div class="card-holder">
-            <Card selected="{false}" card="{value.selected}" show="{value.show}"/>
+            <Card card="{value.selected}" selected="{value.show}" show={showCards}/>
         </div>
     </div>
     {/each}

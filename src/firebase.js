@@ -32,17 +32,30 @@ export const setCurrentRoom = async (userId, roomId) => {
   return userRef.update({currentRoom: roomId})
 };
 
-export const leaveRoom = async(userId) => {
-  let currentRoomRef = db.ref('users').child(userId).child('currentRoom');
-  let currentRoomSnap = await currentRoomRef.once('value');
-  let currentRoomKey = currentRoomSnap.val();
-  if(currentRoomKey) {
-    let userInRoomRef = db.ref('rooms').child(currentRoomKey).child('users').child(userId);
-    await userInRoomRef.remove();
-    return await currentRoomRef.set("");
 
+export const leaveRoom = async(userId) => {
+  let currentRoomKey = getCurrentRoomKey(userId)
+  if(currentRoomKey) {
+    await kickUserFromRoom(userId);
+    let currentRoomRef = db.ref('users').child(userId).child('currentRoom');
+    return await currentRoomRef.set("");
   }
 };
+
+const getCurrentRoomKey = async (userId) => {
+  let currentRoomRef = db.ref('users').child(userId).child('currentRoom');
+  let currentRoomSnap = await currentRoomRef.once('value');
+  return currentRoomSnap.val();
+}
+
+export const kickUserFromRoom = async (userId) => {
+  console.log("kick", userId)
+  let roomKey = await getCurrentRoomKey(userId);
+  if(roomKey) {
+    let userInRoomRef = db.ref('rooms').child(roomKey).child('users').child(userId);
+    return await userInRoomRef.remove();
+  }
+}
 
 export const joinRoom = async (userId, roomId) => {
   console.log("join", userId, roomId)
@@ -60,7 +73,6 @@ export const joinRoom = async (userId, roomId) => {
     await addKnownRoom(userId, roomId, roomToJoin.val().name);
   }
   else {
-    console.log("not found")
     let allRooms = await roomsRef.orderByChild("hash").once('value');
     let rooms = R.values(allRooms.val());
     let roomIndex = R.findIndex(R.propEq('hash', roomId), rooms);
