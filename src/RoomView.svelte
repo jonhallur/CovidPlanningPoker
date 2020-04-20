@@ -34,6 +34,7 @@
             }
         }
     }
+
 </script>
 
 <style>
@@ -82,7 +83,7 @@
         {/if}
         <p class="player-name">{value.name}</p>
         <div class="card-holder">
-            <Card card="{value.selected}" selected="{value.show}" show={showCards}/>
+            <Card card="{value.selected}" selected="{value.show}" show={showCards} time={3000}/>
         </div>
     </div>
     {/each}

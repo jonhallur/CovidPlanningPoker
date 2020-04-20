@@ -1,7 +1,11 @@
 <script>
+    import {elasticIn} from 'svelte/easing'
+    import { slide, fly } from 'svelte/transition';
+
     export let card;
     export let selected;
     export let show;
+    export let time = 100;
     export let onSelected = () => { console.log("onSelected has not been set")};
 </script>
 
@@ -34,9 +38,9 @@
 <div class="card" class:selected="{selected}" on:click="{() => onSelected(card)}">
     <div class="card-inner">
         {#if show}
-            <p>{card}</p>
+            <p in:fly="{{ duration: time, easing: elasticIn }}" out:fly="{{ duration: 100 }}">{card}</p>
         {:else}
-            <p>#</p>
+            <p out:fly="{{ duration: 100}}" in:fly="{{ duration: 100}}" >#</p>
         {/if}
     </div>
 </div>
